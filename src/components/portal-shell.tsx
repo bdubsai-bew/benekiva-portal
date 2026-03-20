@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   FileText,
   FilePlus,
+  Brain,
   Bot,
   BarChart3,
   Settings,
@@ -22,6 +23,7 @@ const NAV = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/claims", label: "Claims", icon: FileText },
   { href: "/claims/new", label: "New Claim", icon: FilePlus },
+  { href: "/document-intelligence", label: "Doc Intelligence", icon: Brain },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
