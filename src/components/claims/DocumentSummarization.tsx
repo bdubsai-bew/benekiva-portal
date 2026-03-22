@@ -243,9 +243,9 @@ export const DocumentSummarization = () => {
             {/* Drop zone */}
             {!uploadedFile && (
               <div
-                className={`border-2 border-dashed rounded-xl p-10 text-center transition-all cursor-pointer ${
+                className={`border-2 border-dashed rounded-xl p-6 md:p-10 text-center transition-all cursor-pointer ${
                   dragOver
-                    ? "border-primary bg-primary/5 scale-[1.01]"
+                    ? "border-primary bg-primary/5 scale-[1.02]"
                     : "border-border hover:border-primary/50 hover:bg-muted/30"
                 }`}
                 onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}

@@ -164,7 +164,7 @@ export const ClaimsIntakeWizard = () => {
                 }`}>
                   {isComplete ? <CheckCircle className="w-5 h-5" /> : <StepIcon className="w-5 h-5" />}
                 </div>
-                <span className={`text-xs ${isActive ? "font-semibold" : "text-muted-foreground"}`}>{step.title}</span>
+                <span className={`text-xs hidden sm:inline ${isActive ? "font-semibold" : "text-muted-foreground"}`}>{step.title}</span>
               </div>
               {i < steps.length - 1 && (
                 <ChevronRight className="w-4 h-4 text-muted-foreground mx-2" />
