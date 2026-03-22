@@ -28,21 +28,52 @@ export const ClaimsIntakeWizard = () => {
     documents: [] as string[],
   });
 
-  // Auto-fill from extracted data
+  const [fillingField, setFillingField] = useState<string | null>(null);
+  const [filledFields, setFilledFields] = useState<Set<string>>(new Set());
+
+  // Animated auto-fill from extracted data
   useEffect(() => {
-    if (extractedData && !autoFilled) {
-      setFormData((prev) => ({
-        ...prev,
-        firstName: extractedData.firstName || prev.firstName,
-        lastName: extractedData.lastName || prev.lastName,
-        dob: extractedData.dateOfBirth || prev.dob,
-        policyNumber: extractedData.policyNumber || prev.policyNumber,
-        claimType: extractedData.claimType || prev.claimType,
-        dateOfLoss: extractedData.dateOfLoss || prev.dateOfLoss,
-        description: extractedData.description || prev.description,
-      }));
-      setAutoFilled(true);
-    }
+    if (!extractedData || autoFilled) return;
+
+    const fieldsToFill: { key: string; value: string }[] = [
+      { key: "firstName", value: extractedData.firstName || "" },
+      { key: "lastName", value: extractedData.lastName || "" },
+      { key: "dob", value: extractedData.dateOfBirth || "" },
+      { key: "policyNumber", value: extractedData.policyNumber || "" },
+      { key: "claimType", value: extractedData.claimType || "" },
+      { key: "dateOfLoss", value: extractedData.dateOfLoss || "" },
+      { key: "description", value: extractedData.description || "" },
+    ].filter((f) => f.value);
+
+    let i = 0;
+    const fillNext = () => {
+      if (i >= fieldsToFill.length) {
+        setFillingField(null);
+        setAutoFilled(true);
+        return;
+      }
+      const { key, value } = fieldsToFill[i];
+      setFillingField(key);
+
+      // Animate typing character by character (fast for demo)
+      let charIdx = 0;
+      const typeInterval = setInterval(() => {
+        charIdx++;
+        const partial = value.slice(0, charIdx);
+        setFormData((prev) => ({ ...prev, [key]: partial }));
+        if (charIdx >= value.length) {
+          clearInterval(typeInterval);
+          setFilledFields((prev) => new Set(prev).add(key));
+          setFillingField(null);
+          i++;
+          setTimeout(fillNext, 150);
+        }
+      }, 25);
+    };
+
+    // Small delay before starting
+    const timeout = setTimeout(fillNext, 400);
+    return () => clearTimeout(timeout);
   }, [extractedData, autoFilled]);
 
   const updateField = (field: string, value: string) =>
@@ -84,27 +115,28 @@ export const ClaimsIntakeWizard = () => {
     );
   }
 
-  const isFieldAutoFilled = (field: string) => {
-    if (!extractedData || !autoFilled) return false;
-    const map: Record<string, string | null> = {
-      firstName: extractedData.firstName,
-      lastName: extractedData.lastName,
-      dob: extractedData.dateOfBirth,
-      policyNumber: extractedData.policyNumber,
-      claimType: extractedData.claimType,
-      dateOfLoss: extractedData.dateOfLoss,
-      description: extractedData.description,
-    };
-    return !!map[field];
-  };
+  const isFieldAutoFilled = (field: string) => filledFields.has(field);
+  const isFieldFilling = (field: string) => fillingField === field;
 
-  const AutoFillBadge = ({ field }: { field: string }) =>
-    isFieldAutoFilled(field) ? (
-      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-2 gap-1">
-        <Sparkles className="w-2.5 h-2.5" />
-        AI Extracted
-      </Badge>
-    ) : null;
+  const AutoFillBadge = ({ field }: { field: string }) => {
+    if (isFieldFilling(field)) {
+      return (
+        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-2 gap-1 animate-pulse bg-primary/10 text-primary">
+          <Sparkles className="w-2.5 h-2.5" />
+          Filling…
+        </Badge>
+      );
+    }
+    if (isFieldAutoFilled(field)) {
+      return (
+        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-2 gap-1">
+          <Sparkles className="w-2.5 h-2.5" />
+          AI Extracted
+        </Badge>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
@@ -160,21 +192,21 @@ export const ClaimsIntakeWizard = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="flex items-center">First Name <AutoFillBadge field="firstName" /></Label>
-                  <Input placeholder="John" value={formData.firstName} onChange={(e) => updateField("firstName", e.target.value)} className={isFieldAutoFilled("firstName") ? "border-primary/40 bg-primary/5" : ""} />
+                  <Input placeholder="John" value={formData.firstName} onChange={(e) => updateField("firstName", e.target.value)} className={isFieldFilling("firstName") ? "border-primary bg-primary/10 ring-2 ring-primary/30" : isFieldAutoFilled("firstName") ? "border-primary/40 bg-primary/5" : ""} />
                 </div>
                 <div className="space-y-2">
                   <Label className="flex items-center">Last Name <AutoFillBadge field="lastName" /></Label>
-                  <Input placeholder="Smith" value={formData.lastName} onChange={(e) => updateField("lastName", e.target.value)} className={isFieldAutoFilled("lastName") ? "border-primary/40 bg-primary/5" : ""} />
+                  <Input placeholder="Smith" value={formData.lastName} onChange={(e) => updateField("lastName", e.target.value)} className={isFieldFilling("lastName") ? "border-primary bg-primary/10 ring-2 ring-primary/30" : isFieldAutoFilled("lastName") ? "border-primary/40 bg-primary/5" : ""} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="flex items-center">Policy Number <AutoFillBadge field="policyNumber" /></Label>
-                  <Input placeholder="POL-2024-XXXXX" value={formData.policyNumber} onChange={(e) => updateField("policyNumber", e.target.value)} className={isFieldAutoFilled("policyNumber") ? "border-primary/40 bg-primary/5" : ""} />
+                  <Input placeholder="POL-2024-XXXXX" value={formData.policyNumber} onChange={(e) => updateField("policyNumber", e.target.value)} className={isFieldFilling("policyNumber") ? "border-primary bg-primary/10 ring-2 ring-primary/30" : isFieldAutoFilled("policyNumber") ? "border-primary/40 bg-primary/5" : ""} />
                 </div>
                 <div className="space-y-2">
                   <Label className="flex items-center">Date of Birth <AutoFillBadge field="dob" /></Label>
-                  <Input type="date" value={formData.dob} onChange={(e) => updateField("dob", e.target.value)} className={isFieldAutoFilled("dob") ? "border-primary/40 bg-primary/5" : ""} />
+                  <Input type="date" value={formData.dob} onChange={(e) => updateField("dob", e.target.value)} className={isFieldFilling("dob") ? "border-primary bg-primary/10 ring-2 ring-primary/30" : isFieldAutoFilled("dob") ? "border-primary/40 bg-primary/5" : ""} />
                 </div>
               </div>
             </>
@@ -199,7 +231,7 @@ export const ClaimsIntakeWizard = () => {
               </div>
               <div className="space-y-2">
                 <Label className="flex items-center">Date of Loss / Onset <AutoFillBadge field="dateOfLoss" /></Label>
-                <Input type="date" value={formData.dateOfLoss} onChange={(e) => updateField("dateOfLoss", e.target.value)} className={isFieldAutoFilled("dateOfLoss") ? "border-primary/40 bg-primary/5" : ""} />
+                <Input type="date" value={formData.dateOfLoss} onChange={(e) => updateField("dateOfLoss", e.target.value)} className={isFieldFilling("dateOfLoss") ? "border-primary bg-primary/10 ring-2 ring-primary/30" : isFieldAutoFilled("dateOfLoss") ? "border-primary/40 bg-primary/5" : ""} />
               </div>
               <div className="space-y-2">
                 <Label className="flex items-center">Description <AutoFillBadge field="description" /></Label>
