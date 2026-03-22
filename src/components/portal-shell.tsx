@@ -53,10 +53,10 @@ export default function PortalShell({ children }: { children: React.ReactNode })
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-16 items-center gap-3 border-b px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-sm">B</div>
+        <div className="flex h-16 items-center gap-3 border-b px-6 bg-gradient-subtle">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-primary text-primary-foreground font-bold text-sm shadow-elegant">B</div>
           <div>
-            <div className="font-semibold text-sm">Benekiva</div>
+            <div className="font-semibold text-sm bg-gradient-primary bg-clip-text text-transparent">Benekiva</div>
             <div className="text-[11px] text-muted-foreground">AI Agent Portal</div>
           </div>
         </div>
@@ -104,11 +104,11 @@ export default function PortalShell({ children }: { children: React.ReactNode })
 
       {/* Main content */}
       <div className="flex flex-1 flex-col min-w-0">
-        <header className="flex h-16 items-center gap-4 border-b bg-card px-6 lg:hidden">
+        <header className="flex h-16 items-center gap-4 border-b bg-gradient-subtle px-6 lg:hidden shadow-sm">
           <button onClick={() => setSidebarOpen(true)}>
             <Menu className="h-5 w-5" />
           </button>
-          <span className="font-semibold">Benekiva</span>
+          <span className="font-semibold bg-gradient-primary bg-clip-text text-transparent">Benekiva</span>
         </header>
         <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>

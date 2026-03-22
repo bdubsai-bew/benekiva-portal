@@ -47,7 +47,7 @@ export default function ClaimsPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold">Claims Dashboard</h1>
+            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">Claims Dashboard</h1>
             <p className="text-muted-foreground">
               {SAMPLE_CLAIMS.length} active claims · {formatCurrency(totalAmount)} total value
             </p>

@@ -15,7 +15,7 @@ export default function SettingsPage() {
     <PortalShell>
       <div className="max-w-2xl space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">Settings</h1>
+          <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">Settings</h1>
           <p className="text-muted-foreground">Carrier configuration and account settings</p>
         </div>
 

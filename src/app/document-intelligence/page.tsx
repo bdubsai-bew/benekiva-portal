@@ -85,7 +85,7 @@ export default function DocumentIntelligencePage() {
             <Brain className="w-5 h-5" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold">Document Intelligence</h1>
+            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">Document Intelligence</h1>
             <p className="text-muted-foreground">
               OCR, Classification, Extraction &amp; Semantic Analysis
             </p>

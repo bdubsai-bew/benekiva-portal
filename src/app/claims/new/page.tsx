@@ -24,7 +24,7 @@ export default function NewClaimPage() {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold">New Claim (FNOL)</h1>
+              <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">New Claim (FNOL)</h1>
               <p className="text-muted-foreground">First Notice of Loss — upload documents or fill the intake form</p>
             </div>
           </div>
