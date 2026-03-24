@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export default function LoginPage() {
   const [email, setEmail] = useState("demo@benekiva.com");
-  const [password, setPassword] = useState("demo");
+  const [password, setPassword] = useState("demo123");
   const [error, setError] = useState("");
   const { login } = useAuth();
   const router = useRouter();
@@ -54,11 +54,9 @@ export default function LoginPage() {
               <Button type="submit" className="w-full">Sign In</Button>
             </form>
 
-            <div className="mt-6 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
-              <p className="font-medium mb-1">Demo Accounts:</p>
-              <p>admin@benekiva.com / any password</p>
-              <p>adjuster@benekiva.com / any password</p>
-              <p>Or any email with password &quot;demo&quot;</p>
+            <div className="mt-6 rounded-lg bg-muted/60 border border-border/50 p-3 text-xs text-muted-foreground">
+              <p className="font-medium mb-1">Demo credentials:</p>
+              <p>demo@benekiva.com / demo123</p>
             </div>
           </CardContent>
         </Card>

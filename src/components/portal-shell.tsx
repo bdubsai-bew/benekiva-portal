@@ -30,10 +30,11 @@ const NAV = [
 
 export default function PortalShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user, logout, loading } = useAuth();
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  if (loading) return null;
   if (!user) {
     router.replace("/login");
     return null;

@@ -1,7 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-import { useRouter } from "next/navigation";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 interface User {
   email: string;
@@ -14,6 +13,7 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => boolean;
   logout: () => void;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -24,26 +24,44 @@ const MOCK_USERS: Record<string, User> = {
   "demo@benekiva.com": { email: "demo@benekiva.com", name: "Demo User", role: "Admin", carrier: "Midwest Life Insurance" },
 };
 
+const STORAGE_KEY = "benekiva_auth_user";
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const login = (email: string, _password: string): boolean => {
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) setUser(JSON.parse(stored));
+    } catch {}
+    setLoading(false);
+  }, []);
+
+  const login = (email: string, password: string): boolean => {
     const u = MOCK_USERS[email.toLowerCase()];
-    if (u) {
-      setUser(u);
-      return true;
+    let loggedIn: User | null = null;
+
+    if (u && (password === "demo123" || password === "demo")) {
+      loggedIn = u;
+    } else if (password === "demo123" || password === "demo") {
+      loggedIn = { email, name: email.split("@")[0], role: "Admin", carrier: "Midwest Life Insurance" };
     }
-    // Accept any email with password "demo"
-    if (_password === "demo") {
-      setUser({ email, name: email.split("@")[0], role: "Admin", carrier: "Midwest Life Insurance" });
+
+    if (loggedIn) {
+      setUser(loggedIn);
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(loggedIn)); } catch {}
       return true;
     }
     return false;
   };
 
-  const logout = () => setUser(null);
+  const logout = () => {
+    setUser(null);
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
+  };
 
-  return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, login, logout, loading }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
